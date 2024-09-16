@@ -1,4 +1,3 @@
-# app/controllers/courses_controller.rb
 class CoursesController < ApplicationController
   before_action :set_course, only: %i[show update destroy]
 
