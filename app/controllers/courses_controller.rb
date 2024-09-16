@@ -1,16 +1,16 @@
+# app/controllers/courses_controller.rb
 class CoursesController < ApplicationController
-  before_action :set_course, only: %i[ show update destroy ]
+  before_action :set_course, only: %i[show update destroy]
 
   # GET /courses
   def index
     @courses = Course.all
-
-    render json: @courses
+    render json: @courses, each_serializer: CourseSerializer
   end
 
   # GET /courses/1
   def show
-    render json: @course
+    render json: @course, serializer: CourseSerializer
   end
 
   # POST /courses
@@ -18,7 +18,7 @@ class CoursesController < ApplicationController
     @course = Course.new(course_params)
 
     if @course.save
-      render json: @course, status: :created, location: @course
+      render json: @course, serializer: CourseSerializer, status: :created, location: @course
     else
       render json: @course.errors, status: :unprocessable_entity
     end
@@ -27,7 +27,7 @@ class CoursesController < ApplicationController
   # PATCH/PUT /courses/1
   def update
     if @course.update(course_params)
-      render json: @course
+      render json: @course, serializer: CourseSerializer
     else
       render json: @course.errors, status: :unprocessable_entity
     end
@@ -39,6 +39,7 @@ class CoursesController < ApplicationController
   end
 
   private
+
     # Use callbacks to share common setup or constraints between actions.
     def set_course
       @course = Course.find(params[:id])
