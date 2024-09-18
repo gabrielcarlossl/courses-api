@@ -1,6 +1,24 @@
 class CoursesController < ApplicationController
   before_action :set_course, only: %i[show update destroy]
 
+  # GET /courses/storage_usage
+  def storage_usage
+    begin
+      s3 = Aws::S3::Client.new(region: ENV['AWS_REGION'])
+      bucket_name = ENV['AWS_BUCKET']
+      objects = s3.list_objects_v2(bucket: bucket_name)
+      total_bytes = objects.contents.sum(&:size)
+      total_gb = total_bytes.to_f / (1024 * 1024 * 1024)
+      render json: {
+        storage_used: total_gb.round(2)
+      }
+    rescue Aws::S3::Errors::ServiceError => e
+      render json: { error: e.message }
+    end
+    
+    
+  end
+
   # GET /courses
   def index
     @courses = Course.order(created_at: :desc)
