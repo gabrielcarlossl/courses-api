@@ -3,7 +3,7 @@ class CoursesController < ApplicationController
 
   # GET /courses
   def index
-    @courses = Course.all
+    @courses = Course.order(created_at: :desc)
     render json: @courses, each_serializer: CourseSerializer
   end
 
